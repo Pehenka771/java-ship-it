@@ -59,8 +59,7 @@ public class DeliveryApp {
     // реализуйте методы ниже
 
     private static void addParcel() {
-
-        PackageType packageType = null;
+        String packageType = null;
 
         while (packageType == null) {
             System.out.println("Введите тип посылки (1 - STANDARD, 2 - FRAGILE, 3 - PERISHABLE):");
@@ -69,13 +68,13 @@ public class DeliveryApp {
 
             switch (input) {
                 case 1:
-                    packageType = PackageType.STANDARD;
+                    packageType = "STANDARD";
                     break;
                 case 2:
-                    packageType = PackageType.FRAGILE;
+                    packageType = "FRAGILE";
                     break;
                 case 3:
-                    packageType = PackageType.PERISHABLE;
+                    packageType = "PERISHABLE";
                     break;
                 default:
                     System.out.println("Ошибка! Допустимые значения: 1 - STANDARD, 2 - FRAGILE, 3 - PERISHABLE. Попробуйте ещё раз.");
@@ -100,22 +99,22 @@ public class DeliveryApp {
         boolean added = false;
 
         switch (packageType) {
-            case STANDARD:
-                newParcel = new StandardParcel(packageType, description, weight, deliveryAddress, sendDay);
+            case "STANDARD":
+                newParcel = new StandardParcel(description, weight, deliveryAddress, sendDay);
                 added = standardParcelBoxes.addParcel((StandardParcel) newParcel);
                 break;
-            case FRAGILE:
-                newParcel = new FragileParcel(packageType, description, weight, deliveryAddress, sendDay);
+            case "FRAGILE":
+                newParcel = new FragileParcel(description, weight, deliveryAddress, sendDay);
                 added = fragileParcelBoxes.addParcel((FragileParcel) newParcel);
                 if (added) {
                     trackableParcels.add((Trackable) newParcel);
                 }
                 break;
-            case PERISHABLE:
+            case "PERISHABLE":
                 System.out.println("Введите срок в днях, за который посылка не испортится");
                 int timeToLive = scanner.nextInt();
                 scanner.nextLine();
-                newParcel = new PerishableParcel(packageType, description, weight, deliveryAddress, sendDay, timeToLive);
+                newParcel = new PerishableParcel(description, weight, deliveryAddress, sendDay, timeToLive);
                 added = perishableParcelBoxes.addParcel((PerishableParcel) newParcel);
                 break;
             default:
@@ -144,7 +143,7 @@ public class DeliveryApp {
 
         int totalCost = 0;
         for (Parcel parcel : allParcels) {
-            totalCost += parcel.getDeliveryCost();
+            totalCost += parcel.calculateDeliveryCost();
         }
         System.out.println(totalCost);
     }
@@ -177,19 +176,19 @@ public class DeliveryApp {
             case 1:
                 List<StandardParcel> allStandardParcels = standardParcelBoxes.getAllParcels();
                 for (StandardParcel parcel : allStandardParcels) {
-                    System.out.println(parcel.getDescription());
+                    System.out.println(parcel.description);
                 }
                 break;
             case 2:
                 List<FragileParcel> allFragileParcels = fragileParcelBoxes.getAllParcels();
                 for (FragileParcel parcel : allFragileParcels) {
-                    System.out.println(parcel.getDescription());
+                    System.out.println(parcel.description);
                 }
                 break;
             case 3:
                 List<PerishableParcel> allPerishableParcels = perishableParcelBoxes.getAllParcels();
                 for (PerishableParcel parcel : allPerishableParcels) {
-                    System.out.println(parcel.getDescription());
+                    System.out.println(parcel.description);
                 }
                 break;
             default:
@@ -215,9 +214,9 @@ public class DeliveryApp {
 
         for (PerishableParcel parcel : perishableParcels) {
             if (parcel.isExpired(currentDay)) {
-                System.out.println("Посылка '" + parcel.getDescription() + "' испортилась.");
+                System.out.println("Посылка '" + parcel.description + "' испортилась.");
             } else {
-                System.out.println("Посылка '" + parcel.getDescription() + "' ещё свежая.");
+                System.out.println("Посылка '" + parcel.description + "' ещё свежая.");
             }
         }
     }
